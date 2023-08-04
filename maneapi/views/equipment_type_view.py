@@ -58,11 +58,24 @@ class EquipmentTypeView(ViewSet):
         serialized = EquipmentTypeSerializer( equipment_type)
         return Response(serialized.data, status=status.HTTP_201_CREATED)
 
+class CurrentEquipmentSerializer(serializers.ModelSerializer):
+    """Serializers to override default pk for equipment
+      on each type
+    """
+    class Meta:
+        """Serializer for equipment"""
+        model = Equipment
+        fields = (
+            'id', 'stylist', 'manufacturer', 'cost',
+            'type', 'purchase_date'
+        )
 
 class EquipmentTypeSerializer(serializers.ModelSerializer):
     """JSON serializer for equipmentType creator"""
 
+    current_equipment = CurrentEquipmentSerializer(many=True)
+
     class Meta:
         """JSON serializer for equipmentType creator"""
         model = EquipmentType
-        fields = ( 'id', 'label', )
+        fields = ( 'id', 'label', 'current_equipment', )
